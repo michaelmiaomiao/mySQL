@@ -6,3 +6,5 @@ learning notes and some examples
 
 # interview questions: 
 - [Interview question from American WEB](https://mindmajix.com/sql-interview-questions)
+
+
