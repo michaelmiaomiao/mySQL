@@ -999,3 +999,146 @@ Syntax:
 3 WHERErental_rate>(
 4 SELECTAVG(rental_rate)
 5 FROMfilm);
+
+
+
+74. 
+
+select Person.FirstName, Person.LastName, Address.City, Address.State
+from Person left join Address
+using(PersonId);
+
+
+
+75. 
+
+https://drill.apache.org/docs/ranking-window-functions/
+
+
+
+76.  Write a SQL query to get the second highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+For example, given the above Employee table, the query should return 200 as the second highest salary. If there is no second highest salary, then the query should return null.
+SELECT ( SELECT DISTINCT
+    Salary AS SecondHighestSalary
+FROM
+    Employee
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 1
+) AS SecondHighestSalary;
+
+
+77. 
+
+Write a SQL query to get the nth highest salary from the Employee table.
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+ DECLARE M INT;
+ SET M = N-1;
+  RETURN (
+      # Write your MySQL query statement below.      
+      select distinct Salary
+      from Employee
+      order by Salary desc
+      LIMIT M,1
+  );
+END
+
+
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+ DECLARE M INT;
+ SET M = N-1;
+  RETURN (
+      # Write your MySQL query statement below.      
+      select distinct Salary
+      from Employee
+      order by Salary desc
+      LIMIT M,1 # the second 1 means returns 1 row pertime
+  );
+
+
+
+
+
+78. 如何 creatfunc
+
+
+79. DENSE_RANK() 
+
+
+80. SELECT
+  rental_rate,(SELECT count(*) 
+FROM (SELECT distinct rental_rate s FROM film) tmp 
+WHERE s >= rental_rate) Rank 
+FROM film
+ORDER BY rental_rate DESC;
+
+
+81. 
+
+# Write your MySQL query statement below
+SELECT DISTINCT
+    l1.Num AS ConsecutiveNums
+FROM
+    Logs l1,
+    Logs l2,
+    Logs l3
+WHERE
+    l1.Id = l2.Id - 1
+    AND l2.Id = l3.Id - 1
+    AND l1.Num = l2.Num
+    AND l2.Num = l3.Num
+;
+
+
+82. 
+SELECT AB FROM (SELECT aa.customer_id AB , aa.first_name BA FROM customer aa, film bb 
+WHERE aa.customer_id NOT IN (select bb.film_id)) AS CC;
+
+
+83. 
+
+
+select class from courses group by class having count(distinct student) >= 5;
+
+
+# Write your MySQL query statement below
+SELECT
+    class
+FROM(SELECT
+    class, COUNT(DISTINCT student) as num
+FROM
+    courses 
+GROUP BY class) AS s
+WHERE s.num >= 5
+
+
+select d.Name Department, e1.Name Employee, e1.Salary
+from Employee e1 
+join Department d
+on e1.DepartmentId = d.Id
+where 3 > (select count(distinct(e2.Salary)) 
+                  from Employee e2 
+                  where e2.Salary > e1.Salary 
+                  and e1.DepartmentId = e2.DepartmentId
+                  );
+
+
+
